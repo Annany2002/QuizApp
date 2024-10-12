@@ -2,11 +2,11 @@ import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
 // Extend the Request interface to include the user property
-interface CustomRequest extends Request {
+export interface CustomRequest extends Request {
   user?: any;
 }
 
-export function userValidation(
+export function userQuizValidation(
   req: CustomRequest,
   res: Response,
   next: NextFunction
@@ -21,7 +21,9 @@ export function userValidation(
     jwt.verify(token, process.env.JWT_SECRET as string, (err, user) => {
       if (err) {
         if (err.name === "TokenExpiredError") {
-          return res.status(401).json({ message: "Token expired" });
+          return res
+            .status(401)
+            .json({ message: "Token expired! Please Login again" });
         } else {
           return res.status(403).json({ message: "Invalid token" });
         }

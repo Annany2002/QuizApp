@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { Quiz } from "../models/quiz.model";
+import { CustomRequest } from "../middlewares/quiz.middlewarre";
+import { User } from "../models/user.model";
 
 export async function getAllQuizzes(req: Request, res: Response) {
   try {
@@ -39,13 +41,54 @@ export async function createQuiz(req: Request, res: Response) {
   }
 }
 
-export async function takeQuiz(req: Request, res: Response) {
+export async function takeQuiz(
+  req: CustomRequest,
+  res: Response
+): Promise<void> {
   try {
-    // const { quizId, option } = req.body;
+    const { option } = req.body;
     const { quizId } = req.params;
-    console.log(req);
+    const { user } = req;
+
+    const requiredQuiz = await Quiz.findById(quizId);
+
+    if (!requiredQuiz) {
+      res.status(404).json({ message: "Quiz not found" });
+      return;
+    }
+
+    if (requiredQuiz.correctOption !== option) {
+      res.status(400).json({ message: "Incorrect option selected" });
+      return;
+    }
+
+    requiredQuiz.solvedBy.push(user.id);
+    await requiredQuiz.save();
+
+    await User.findByIdAndUpdate(
+      user.id,
+      { $push: { solvedQuizzes: quizId } },
+      { new: true }
+    );
+
+    res.status(200).json({ message: "Correct option selected" });
   } catch (error) {
     console.log(error);
-    res.status(400).json({ message: error });
+    res.status(500).json(error);
+  }
+}
+
+export async function getQuizResults(req: Request, res: Response) {
+  try {
+    const { quizId } = req.params;
+    const quiz = await Quiz.findById(quizId);
+    if (!quiz) {
+      res.status(404).json({ message: "Quiz not found" });
+      return;
+    }
+    res.status(200).json({ solvedBy: quiz.solvedBy });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
   }
 }

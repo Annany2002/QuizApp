@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { compareSync, hashSync, genSaltSync } from "bcrypt";
-import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 import { User } from "../models/user.model";
 import "dotenv/config";
 
@@ -13,34 +13,35 @@ export async function userRegister(req: Request, res: Response) {
     const user = await User.create({ email, password: hashedPassword });
 
     const signedToken = sign(
-      { email, password },
+      {
+        email,
+        id: user._id,
+      },
       process.env.JWT_SECRET as string,
       {
-        expiresIn: "2h",
+        expiresIn: "1h",
       }
     );
     res.status(201).json({ user, signedToken });
   } catch (error) {
     console.log(error);
-    res.status(400).json({ message: error });
+    res.status(400).json(error);
   }
 }
 
 export async function userLogin(req: Request, res: Response) {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email: email });
-    if (!user) {
-      throw new Error("User not found");
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      res.status(401).json({ message: "Authorization token missing" });
+      return;
     }
 
-    if (!compareSync(password, user.password)) {
-      res.status(403).json({ message: "Invalid Credentials" });
-    }
-
-    res.status(200).json({ user });
+    const verifiedUser = verify(token, process.env.JWT_SECRET as string);
+    // console.log("Verified User", verifiedUser);
+    res.status(200).json(verifiedUser);
   } catch (error) {
     console.log(error);
-    res.status(400).json({ message: error });
+    res.status(400).json(error);
   }
 }
