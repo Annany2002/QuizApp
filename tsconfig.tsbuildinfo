@@ -1,0 +1,14 @@
+{
+  "root": [
+    "./src/index.ts",
+    "./src/controllers/quiz.controllers.ts",
+    "./src/controllers/user.controllers.ts",
+    "./src/middlewares/quiz.middlewarre.ts",
+    "./src/models/quiz.model.ts",
+    "./src/models/user.model.ts",
+    "./src/routes/quiz.route.ts",
+    "./src/routes/user.route.ts",
+    "./src/utils/connection.ts"
+  ],
+  "version": "5.6.3"
+}
