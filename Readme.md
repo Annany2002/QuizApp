@@ -90,9 +90,9 @@ Request Body :
 
 ```json
 {
-"question": String,
-"option": [String],
-"correctOption" : Integer[0-3]
+   "question": String,
+   "option": [String],
+   "correctOption" : Integer[0-3]
 }
 ```
 
@@ -102,6 +102,6 @@ Request Body :
 
 ```json
 {
-  "option": Integer[0-3]
+   "option": Integer[0-3]
 }
 ```
