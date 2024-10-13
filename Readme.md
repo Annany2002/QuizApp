@@ -50,7 +50,7 @@ This is a RESTful API for a basic online quiz application built with Node.js and
 4. **Start the Server:**
 
    ```bash
-       npm run dev
+   npm run dev
    ```
 
 ## API Endpoints
