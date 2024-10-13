@@ -6,7 +6,7 @@ This is a RESTful API for a basic online quiz application built with Node.js and
 
 - **User Authentication:**
   - User registration with email and password.
-  - User login with JWT authentication.
+  - User login with JWT authentication(expires in 1hr).
 - **Quiz Management:**
   - Create new quizzes with multiple choice questions (single correct answer, four options).
   - Get a list of all quizzes.
@@ -57,13 +57,51 @@ This is a RESTful API for a basic online quiz application built with Node.js and
 
 ### User Authentication
 
-- > **POST** /api/users/register: Register a new user.
-- > **POST** /api/users/login: Login an existing user.
+1. > **POST** /api/users/register: Register a new user.
+
+Request Body :
+
+```json
+{
+  "email": String,
+  "password": String
+}
+```
+
+2.  > **POST** /api/users/login: Login an existing user.
+
+Request Body :
+
+```json
+{
+  "email": String,
+  "password": String
+}
+```
 
 ## Quiz Management (requires authentication)
 
-- > **GET** /api/quizzes/all: Get a list of all quizzes.
-- > **GET** /api/quizzes/:quizId: Get details of a specific quiz.
-- > **GET** /api/quizzes/:quizId/results: View results for a quiz.
-- > **POST** /api/quizzes/create: Create a new quiz.
-- > **POST** /api/quizzes/:quizId/take: Take a quiz and submit answers.
+1. > **GET** /api/quizzes/all: Get a list of all quizzes.
+2. > **GET** /api/quizzes/:quizId: Get details of a specific quiz.
+3. > **GET** /api/quizzes/:quizId/results: View results for a quiz.
+4. > **POST** /api/quizzes/create: Create a new quiz.
+
+Request Body :
+
+```json
+{
+"question": String,
+"option": [String],
+"correctOption" : Integer[0-3]
+}
+```
+
+5. > **POST** /api/quizzes/:quizId/take: Take a quiz and submit answers.
+
+Request Body :
+
+```json
+{
+  "option": Integer[0-3]
+}
+```
